@@ -1,0 +1,38 @@
+{
+  "name": "clicker-master-lib",
+  "version": "0.1.0",
+  "description": "A master side lib for Android-Remote-Clicker(https://github.com/aaadddfgh/Android-Remote-Clicker)",
+  "type": "module",
+  "module": "./dist/bundle.umd.js",
+  "main": "./dist/bundle.cjs",
+  "browser": "./dist/bundle.umd.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/bundle.mjs",
+      "require": "./dist/bundle.cjs"
+      
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "tests": "mocha --require ts-node/register test/**/*.ts"
+  },
+  "keywords": [
+    "automation",
+    "android"
+  ],
+  "author": "aaadddfgh",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "mocha": "^10.3.0",
+    "rollup": "^4.12.0",
+    "rollup-plugin-polyfill-node": "^0.13.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}

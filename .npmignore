@@ -1,0 +1,4 @@
+src
+test
+.mocharc.json
+package-lock.json
