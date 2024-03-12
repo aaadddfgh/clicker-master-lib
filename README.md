@@ -2,6 +2,8 @@
 
 This is the master side js/ts lib for [Android-Remote-Clicker](https://github.com/aaadddfgh/Android-Remote-Clicker)
 
+Find source code [here](https://github.com/aaadddfgh/clicker-master-lib)
+
 Examle UI can be find in `\public\`.
 
 # Example
