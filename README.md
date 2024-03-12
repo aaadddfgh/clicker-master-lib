@@ -4,7 +4,9 @@ This is the master side js/ts lib for [Android-Remote-Clicker](https://github.co
 
 Find source code [here](https://github.com/aaadddfgh/clicker-master-lib)
 
-Examle UI can be find in `\public\`.
+Examle UI can be find in `/public/`.
+
+Data security still WORKING. 
 
 # Example
 
