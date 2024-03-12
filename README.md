@@ -2,7 +2,12 @@
 
 This is the master side js/ts lib for [Android-Remote-Clicker](https://github.com/aaadddfgh/Android-Remote-Clicker)
 
+Examle UI can be find in `\public\`.
+
 # Example
+
+Direct use [example.html](./public)
+
 ``` js
 import { CommandJsonBuilder } from "../src/CommandJsonBuilder"
 

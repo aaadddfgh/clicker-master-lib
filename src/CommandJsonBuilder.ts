@@ -25,8 +25,16 @@ export class CommandJsonBuilder {
     }
 
     public  clear() {
+        
         this.commandBuilder.clear();
         return;
+    }
+
+    public removeCommand(index: number): this {
+        if (index >= 0 && index < this.commandBuilder.commands.length) {
+            this.commandBuilder.commands.splice(index, 1);
+        }
+        return this;
     }
 
     /**

@@ -1,6 +1,8 @@
 import { Command } from "./Command";
 
 export class CommandBuilder {
+
+    commands: Command[] = [];
     stringBuilder: string;
 
     constructor() {
@@ -8,31 +10,36 @@ export class CommandBuilder {
     }
 
     click(x: number, y: number): this {
-        this.stringBuilder += CommandBuilder.makeClick(x, y).toString() + ";";
+        this.commands.push(CommandBuilder.makeClick(x, y));
         return this;
     }
 
     sleep(duration: number): this {
-        this.stringBuilder += CommandBuilder.makeSleep(duration).toString() + ";";
+        this.commands.push(CommandBuilder.makeSleep(duration));
         return this;
     }
 
     swipe(x1: number, y1: number, x2: number, y2: number, duration?: number, delay?: number): this {
         if (typeof duration !== "undefined" && typeof delay !== "undefined") {
-            this.stringBuilder += CommandBuilder.makeSwipe(x1, y1, x2, y2, duration, delay).toString() + ";";
+            this.commands.push(CommandBuilder.makeSwipe(x1, y1, x2, y2, duration, delay));
         } else if (typeof duration !== "undefined") {
-            this.stringBuilder += CommandBuilder.makeSwipe(x1, y1, x2, y2, duration).toString() + ";";
+            this.commands.push(CommandBuilder.makeSwipe(x1, y1, x2, y2, duration));
         } else {
-            this.stringBuilder += CommandBuilder.makeSwipe(x1, y1, x2, y2).toString() + ";";
+            this.commands.push(CommandBuilder.makeSwipe(x1, y1, x2, y2));
         }
         return this;
     }
 
     build(): string {
-        return this.stringBuilder;
+        
+        return this.commands.reduce(
+                (acc,command) => {return acc + command.toString()+';';},
+                ""
+            );
     }
 
     clear(): void {
+        this.commands = [];
         this.stringBuilder = "";
     }
 

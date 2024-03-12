@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Builder UI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        #commandBuilder {
+            margin: 20px auto;
+            width: 80%;
+            max-width: 600px;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .command-item {
+            margin-bottom: 5px;
+        }
+
+        #screenshotContainer {
+            margin: 20px auto;
+            width: 80%;
+            max-width: 600px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #screenshot {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        #clickOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        #coordinates {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="commandBuilder">
+        <button id="clickBtn">Click</button>
+        <button id="sleepBtn">Sleep</button>
+        <button id="swipeBtn">Swipe</button>
+        <button id="clearBtn">Clear</button>
+        <br>
+        <input type="text" id="x1" placeholder="X1">
+        <input type="text" id="y1" placeholder="Y1">
+        <br>
+        <input type="text" id="x2" placeholder="X2">
+        <input type="text" id="y2" placeholder="Y2">
+        <br>
+        <input type="text" id="duration" placeholder="Duration">
+        <br>
+        <button id="buildCommand">Build Command</button>
+        <br>
+        <input type="text" id="url" placeholder="URL">
+        <button id="sendCommandBtn">Send Command</button>
+        <div id="output"></div>
+    </div>
+    <input type="file" id="fileInput">
+    <div id="screenshotContainer">
+
+        <img id="screenshot"
+            src="data:image/jpeg;base64,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"
+            alt="Screenshot">
+        <div id="clickOverlay"></div>
+        <div id="coordinates"></div>
+    </div>
+
+    <script>
+        const screenshotContainer = document.getElementById('screenshotContainer');
+        const screenshot = document.getElementById('screenshot');
+        const clickOverlay = document.getElementById('clickOverlay');
+        const coordinates = document.getElementById('coordinates');
+        function convertToOriginalCoordinates(clickX, clickY) {
+            // 获取截图元素
+            const screenshot = document.getElementById('screenshot');
+
+            // 获取原始图片的宽度和高度
+            const originalWidth = screenshot.naturalWidth;
+            const originalHeight = screenshot.naturalHeight;
+
+            // 获取截图容器的尺寸和位置信息
+            const containerRect = screenshot.getBoundingClientRect();
+
+            // 计算相对于截图的点击坐标
+            const relativeClickX = clickX;
+            const relativeClickY = clickY;
+
+            // 将相对坐标转换为原图像的坐标
+            const scaleX = originalWidth / screenshot.width;
+            const scaleY = originalHeight / screenshot.height;
+
+            const originalClickX = Math.round(relativeClickX * scaleX);
+            const originalClickY = Math.round(relativeClickY * scaleY);
+
+            return { x: originalClickX, y: originalClickY };
+        }
+        screenshot.addEventListener('load', () => {
+            // Set click overlay size to match screenshot
+            clickOverlay.style.width = `${screenshot.offsetWidth}px`;
+            clickOverlay.style.height = `${screenshot.offsetHeight}px`;
+        });
+
+        clickOverlay.addEventListener('click', (event) => {
+            // Calculate click coordinates relative to screenshot
+            const rect = screenshot.getBoundingClientRect();
+            const X = event.clientX - rect.left;
+            const Y = event.clientY - rect.top;
+            const { x, y } = convertToOriginalCoordinates(X, Y);
+            // Display coordinates
+            coordinates.innerText = `Clicked at: (${x}, ${y})`;
+        });
+
+        fileInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const imageURL = URL.createObjectURL(file);
+                screenshot.src = imageURL;
+            }
+        });
+    </script>
+
+    <script>
+        class Command {
+            constructor(actions) {
+                this.action = Command.Actions[actions];
+                this.pos = [];
+            }
+            addPosition(x, y) {
+                this.pos.push({ x, y });
+                return this;
+            }
+            setDuration(duration) {
+                this.duration = duration;
+                return this;
+            }
+            setDelay(delay) {
+                this.delay = delay;
+                return this;
+            }
+            toString() {
+                let builder = this.action;
+                for (let point of this.pos) {
+                    builder += ` ${point.x} ${point.y}`;
+                }
+                if (this.duration && this.duration > 0) {
+                    builder += ` ${this.duration}`;
+                }
+                if (this.delay && this.delay > 0) {
+                    builder += ` ${this.delay}`;
+                }
+                return builder;
+            }
+        }
+        Command.Actions = {
+            CLICK: "click",
+            SLEEP: "sleep",
+            SWIPE: "swipe"
+        };
+
+        class CommandBuilder {
+            constructor() {
+                this.commands = [];
+                this.stringBuilder = "";
+            }
+            click(x, y) {
+                this.commands.push(CommandBuilder.makeClick(x, y));
+                return this;
+            }
+            sleep(duration) {
+                this.commands.push(CommandBuilder.makeSleep(duration));
+                return this;
+            }
+            swipe(x1, y1, x2, y2, duration, delay) {
+                if (typeof duration !== "undefined" && typeof delay !== "undefined") {
+                    this.commands.push(CommandBuilder.makeSwipe(x1, y1, x2, y2, duration, delay));
+                }
+                else if (typeof duration !== "undefined") {
+                    this.commands.push(CommandBuilder.makeSwipe(x1, y1, x2, y2, duration));
+                }
+                else {
+                    this.commands.push(CommandBuilder.makeSwipe(x1, y1, x2, y2));
+                }
+                return this;
+            }
+            build() {
+                return this.commands.reduce((acc, command) => { return acc + command.toString() + ';'; }, "");
+            }
+            clear() {
+                this.commands = [];
+                this.stringBuilder = "";
+            }
+            static makeClick(x, y) {
+                return new Command("CLICK").addPosition(x, y);
+            }
+            static makeSleep(duration) {
+                return new Command("SLEEP").setDuration(duration);
+            }
+            static makeSwipe(x1, y1, x2, y2, duration, delay) {
+                let swipeCommand = new Command("SWIPE").addPosition(x1, y1).addPosition(x2, y2);
+                if (typeof duration !== "undefined") {
+                    swipeCommand.setDuration(duration);
+                }
+                if (typeof delay !== "undefined") {
+                    swipeCommand.setDelay(delay);
+                }
+                return swipeCommand;
+            }
+        }
+
+        class CommandJsonBuilder {
+            constructor() {
+                this.commandBuilder = new CommandBuilder();
+            }
+            click(x, y) {
+                this.commandBuilder.click(x, y);
+                return this;
+            }
+            // 添加睡眠命令到构建器
+            sleep(duration) {
+                this.commandBuilder.sleep(duration);
+                return this;
+            }
+            // 添加滑动命令到构建器，带持续时间和延迟
+            swipe(x1, y1, x2, y2, duration = undefined, delay = undefined) {
+                this.commandBuilder.swipe(x1, y1, x2, y2, duration, delay);
+                return this;
+            }
+            clear() {
+                this.commandBuilder.clear();
+                return;
+            }
+            removeCommand(index) {
+                if (index >= 0 && index < this.commandBuilder.commands.length) {
+                    this.commandBuilder.commands.splice(index, 1);
+                }
+                return this;
+            }
+            /**
+             * build
+             */
+            build() {
+                return { "commands": this.commandBuilder.build() };
+            }
+            buildString() {
+                return JSON.stringify(this.build());
+            }
+        }
+        /**
+         *
+         * @param url e.g http://127.0.0.1:8888
+         * @param commands
+         */
+        function sendCommand(url, commands) {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', url);
+            xhr.send(commands.buildString());
+        }
+        const commandBuilder = new CommandJsonBuilder();
+        const clickBtn = document.getElementById('clickBtn');
+        const sleepBtn = document.getElementById('sleepBtn');
+        const swipeBtn = document.getElementById('swipeBtn');
+        const buildCommandBtn = document.getElementById('buildCommand');
+        const clearBtn = document.getElementById('clearBtn');
+        const outputDiv = document.getElementById('output');
+
+        clickBtn.addEventListener('click', () => addCommand('click'));
+        sleepBtn.addEventListener('click', () => addCommand('sleep'));
+        swipeBtn.addEventListener('click', () => addCommand('swipe'));
+        clearBtn.addEventListener('click', () => clearCommands());
+
+        function addCommand(command) {
+            let newCommand;
+            if (command === 'click') {
+                const x = document.getElementById('x1').value;
+                const y = document.getElementById('y1').value;
+                newCommand = { action: 'click', x, y };
+                commandBuilder.click(x, y);
+            } else if (command === 'sleep') {
+                const duration = document.getElementById('duration').value;
+                newCommand = { action: 'sleep', duration };
+                commandBuilder.sleep(duration);
+            } else if (command === 'swipe') {
+                const x1 = document.getElementById('x1').value;
+                const y1 = document.getElementById('y1').value;
+                const x2 = document.getElementById('x2').value;
+                const y2 = document.getElementById('y2').value;
+                const duration = document.getElementById('duration').value;
+                newCommand = { action: 'swipe', x1, y1, x2, y2, duration };
+                commandBuilder.swipe(x1, y1, x2, y2, duration);
+            }
+            displayCommand(newCommand);
+        }
+
+        function displayCommand(command) {
+            const commandDiv = document.createElement('div');
+            commandDiv.classList.add('command-item');
+            commandDiv.innerHTML = `<span>${JSON.stringify(command)}</span> <button class="delete-btn">Delete</button>`;
+            outputDiv.appendChild(commandDiv);
+            const deleteBtn = commandDiv.querySelector('.delete-btn');
+            deleteBtn.addEventListener('click', () => deleteCommand(commandDiv));
+        }
+
+        function deleteCommand(commandDiv) {
+            const index = Array.from(outputDiv.children).indexOf(commandDiv);
+            commandBuilder.removeCommand(index);
+            outputDiv.removeChild(commandDiv);
+        }
+
+        buildCommandBtn.addEventListener('click', () => buildCommand());
+
+        function buildCommand() {
+            const commands = commandBuilder.buildString();
+            outputDiv.innerText = commands;
+        }
+
+        function clearCommands() {
+            commandBuilder.clear();
+            outputDiv.innerHTML = '';
+        }
+    </script>
+    <script>
+
+        const sendCommandBtn = document.getElementById('sendCommandBtn');
+
+        sendCommandBtn.addEventListener('click', () => {
+            sendCommand(document.getElementById('url').value, commandBuilder);
+        });
+    </script>
+</body>
+
+</html>
